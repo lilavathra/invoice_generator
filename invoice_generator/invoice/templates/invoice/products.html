@@ -1,0 +1,72 @@
+{% extends 'invoice/base.html' %}
+
+
+{% block content %}
+    <h2 class="text-success text-center">Products</h2>
+
+
+    <!-- Add/Edit Product Form -->
+    <form method="POST" id="productForm">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" id="product_id" value="">
+        <div class="mb-3">
+            <label for="name" class="form-label">Product Name</label>
+            <input type="text" class="form-control" id="name" name="name" required placeholder="e.g., Laptop">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description of Goods (Optional)</label>
+            <textarea class="form-control" id="description" name="description" rows="3" placeholder="e.g., High-performance laptop with 16GB RAM"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="rate" class="form-label">Rate</label>
+            <input type="number" step="0.01" class="form-control" id="rate" name="rate" required placeholder="e.g., 999.99">
+        </div>
+        <button type="submit" class="btn btn-primary">Save Product</button>
+        <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear</button>
+    </form>
+
+    <!-- Product List -->
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Rate</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.description|default:'N/A' }}</td>
+                <td>{{ product.rate }}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editProduct('{{ product.id }}', '{{ product.name }}', '{{ product.description|escapejs }}', '{{ product.rate }}')">Edit</button>
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="delete_product" value="true">
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        {% comment %} Edit {% endcomment %}
+        function editProduct(id, name, description, rate) {
+            document.getElementById('product_id').value = id;
+            document.getElementById('name').value = name;
+            document.getElementById('description').value = description;
+            document.getElementById('rate').value = rate;
+        }
+        {% comment %} Clear {% endcomment %}
+        function clearForm() {
+            document.getElementById('productForm').reset();
+            document.getElementById('product_id').value = '';
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'invoice/base.html' %}
+
+{% block content %}
+    <h2 class="text-success text-center">All Invoices</h2>
+    
+
+    <a href="{% url 'invoice_create' %}" class="btn btn-primary mb-3"><i class="bi bi-file-earmark-plus"></i>Create New Invoice</a>
+
+    {% comment %} List of tables {% endcomment %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Bill No</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total Quantity</th>
+                <th>Total Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invoice in invoices %}
+            <tr>
+                <td>{{ invoice.bill_no }}</td>
+                <td>{{ invoice.buyer_name }}</td>
+                <td>{{ invoice.date }}</td>
+                <td>{{ invoice.total_quantity }}</td>
+                <td>{{ invoice.total_price }}</td>
+                <td>
+                    <!-- Edit Button (Icon and Text on Large Screens, Icon Only on Mobile) -->
+                    <a href="{% url 'invoice_edit' invoice.id %}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-pencil-square"></i> <!-- Show the icon on all screens -->
+                        <span class="d-none d-md-inline"> Edit</span> <!-- Show text only on medium and larger screens -->
+                    </a>
+                
+                    <!-- Delete Button (Icon and Text on Large Screens, Icon Only on Mobile) -->
+                    <a href="{% url 'delete_invoice' invoice.id %}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> <!-- Show the icon on all screens -->
+                        <span class="d-none d-md-inline"> Delete</span> <!-- Show text only on medium and larger screens -->
+                    </a>
+                
+                    <!-- Print Button (Icon and Text on Large Screens, Icon Only on Mobile) -->
+                    <a href="{% url 'generate_pdf' invoice.id %}" class="btn btn-info btn-sm">
+                        <i class="bi bi-printer"></i> <!-- Show the icon on all screens -->
+                        <span class="d-none d-md-inline"> Print</span> <!-- Show text only on medium and larger screens -->
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No invoices found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

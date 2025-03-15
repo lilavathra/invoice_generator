@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+    {% comment %} Header {% endcomment %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TACKITS INVOICE GENERATOR</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    {% comment %} Bootstrap icon {% endcomment %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        .toast {
+            background-color: rgba(255, 255, 255, 0.1); 
+            border-radius: 10px; /* rounded corners */
+            backdrop-filter: blur(10px); /* base blur effect for glassiness */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white !important; /* text color */
+        }
+        
+        /* Using Bootstrap background classes with slight opacity tweak */
+        .toast-success {
+            background-color: rgba(var(--bs-success-rgb), 0.85) !important;
+        }
+        
+        .toast-error {
+            background-color: rgba(var(--bs-danger-rgb), 0.85) !important;
+        }
+        
+        .toast-warning {
+            background-color: rgba(var(--bs-warning-rgb), 0.85) !important;
+        }
+
+        .toast-body {
+            background-color: rgba(255, 255, 255, 0.05); /* Subtle glassy background */
+            backdrop-filter: blur(5px); /* Additional blur for glassiness */
+            color: white !important; /* Ensures white text */
+            border-top: 1px solid rgba(255, 255, 255, 0.1); /* Separator from header */
+        }
+
+        .toast-header {
+            background-color: rgba(0, 0, 0, 0.3) !important;
+            color: white !important; /* White text color */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; 
+            font-weight: bold;
+        }
+        
+        .btn-close {
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+
+    {% comment %} Navbar {% endcomment %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'dashboard' %}">
+                {% if shop_details and shop_details.logo and shop_details.logo.url %}
+                    <img src="{{ shop_details.logo.url }}" alt="Shop Logo" class="me-2" width="30" style="max-height: 30px;" onerror="this.style.display='none';">
+                {% endif %}
+                <p class="fs-6 text-nowrap b-3" id="invoice-text">TACKITS INVOICE GENERATOR</p>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                {% if user.is_authenticated %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}" href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/create_invoice/' %} active{% endif %}" href="{% url 'invoice_create' %}">Create Invoices</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/all-invoices/' %}active{% endif %}" href="{% url 'all_invoices' %}">All Invoices</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/products/' %}active{% endif %}" href="{% url 'products' %}">All Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/shop-details/' %}active{% endif %}" href="{% url 'shop_details' %}">Shop Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+                {% else %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/login/' %}active{% endif %}" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/signup/' %}active{% endif %}" href="{% url 'signup' %}">Sign Up</a>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    
+    
+    {% comment %} Main block container {% endcomment %}
+    <div class="container mt-3">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    {% comment %} Toast Container {% endcomment %}
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="toast {% if 'success' in message.tags %}toast-success{% elif 'error' in message.tags %}toast-error{% elif 'warning' in message.tags %}toast-warning{% endif %}" 
+                     role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+                    <div class="toast-header">
+                        <strong class="me-auto">
+                            {% if 'success' in message.tags %}
+                                Success
+                            {% elif 'error' in message.tags %}
+                                Error
+                            {% elif 'warning' in message.tags %}
+                                Warning
+                            {% else %}
+                                Info
+                            {% endif %}
+                        </strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    {% comment %} Toast Initialization Script {% endcomment %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastElements = document.querySelectorAll('.toast');
+            toastElements.forEach(function(toastEl) {
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            });
+        });
+    </script>
+</body>
+</html>

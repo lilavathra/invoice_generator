@@ -1,0 +1,33 @@
+
+
+/* Base styling for the text */
+#invoice-text {
+    font-size: 1.2rem;
+    margin-bottom: 0; /* Remove any margin-bottom */
+}
+
+/* Make the text responsive */
+@media (max-width: 768px) {
+    #invoice-text {
+        font-size: 1rem; /* Decrease font size for smaller screens */
+    }
+}
+
+@media (max-width: 576px) {
+    #invoice-text {
+        font-size: 0.9rem; /* Further decrease font size for very small screens */
+    }
+}
+
+/* You may want to add some padding to the logo and text */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    padding: 10px; /* Adjust padding as needed */
+}
+
+/* Optional: Ensure the image size doesn't grow too large */
+.navbar-brand img {
+    max-height: 30px;
+    width: auto;
+}
