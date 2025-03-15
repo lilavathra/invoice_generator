@@ -47,7 +47,7 @@ class InvoiceItemForm(forms.ModelForm):
 class InvoiceForm(forms.ModelForm):
     class Meta:
         model = Invoice
-        fields = ['buyer_name', 'address', 'date', 'transport']  # Removed bill_no
+        fields = ['buyer_name', 'address', 'date', 'transport']
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)

@@ -27,7 +27,7 @@
                        value="{% if mode == 'edit' %}{{ invoice.bill_no }}{% else %}{{ next_bill_no }}{% endif %}" readonly>
             </div>
             <div class="col-md-3">
-                <label class="form-label">Issued Date</label>
+                <label class="form-label">Due Date</label>
                 {{ invoice_form.date }}
             </div>
             <div class="col-md-3">

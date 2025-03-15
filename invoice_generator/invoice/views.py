@@ -76,6 +76,7 @@ def shop_details(request):
         if request.FILES.get('logo'):
             shop_details.logo = request.FILES.get('logo')
         shop_details.save()
+        messages.success(request, "Shop Details Saved Successfully")
         return redirect('shop_details')
     shop_details = ShopDetails.objects.filter(user=request.user).first()
     return render(request, 'invoice/shop_details.html', {'shop_details': shop_details})
@@ -310,5 +311,6 @@ def generate_pdf(request, invoice_id):
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="invoice-{invoice.bill_no}-{invoice.buyer_name}.pdf"'
+    
     response.write(pdf)
     return response
